@@ -4,7 +4,7 @@
     - [x] Task #1
     - [x] Task #2
     - [ ] Task #3
-    - [ ] Task #4
+    - [x] Task #4
 
 - [ ] Project #1
 
