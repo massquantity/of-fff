@@ -13,9 +13,11 @@ auto TrieStore::Get(std::string_view key) -> std::optional<ValueGuard<T>> {
   //     root. Otherwise, return std::nullopt.
   /** throw NotImplementedException("TrieStore::Get is not implemented."); */
 
-  root_lock_.lock();
-  Trie root = root_;
-  root_lock_.unlock();
+  Trie root;
+  {
+    std::lock_guard<std::mutex> root_lock(root_lock_);
+    root = root_;
+  }
 
   const T *value = root.Get<T>(key);
   if (value == nullptr) {
@@ -31,13 +33,17 @@ void TrieStore::Put(std::string_view key, T value) {
   // The logic should be somehow similar to `TrieStore::Get`.
   /** throw NotImplementedException("TrieStore::Put is not implemented."); */
 
+  std::lock_guard<std::mutex> write_lock(write_lock_);
+
   root_lock_.lock();
   Trie root = root_;
   root_lock_.unlock();
 
-  write_lock_.lock();
-  root_ = root.Put<T>(key, std::move(value));
-  write_lock_.unlock();
+  root = root.Put<T>(key, std::move(value));
+
+  root_lock_.lock();
+  root_ = root;
+  root_lock_.unlock();
 }
 
 void TrieStore::Remove(std::string_view key) {
@@ -45,13 +51,17 @@ void TrieStore::Remove(std::string_view key) {
   // The logic should be somehow similar to `TrieStore::Get`.
   /** throw NotImplementedException("TrieStore::Remove is not implemented."); */
 
+  std::lock_guard<std::mutex> write_lock(write_lock_);
+
   root_lock_.lock();
   Trie root = root_;
   root_lock_.unlock();
 
-  write_lock_.lock();
-  root_ = root.Remove(key);
-  write_lock_.unlock();
+  root = root.Remove(key);
+
+  root_lock_.lock();
+  root_ = root;
+  root_lock_.unlock();
 }
 
 // Below are explicit instantiation of template functions.
