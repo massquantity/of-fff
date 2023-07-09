@@ -6,7 +6,10 @@
     - [ ] Task #3
     - [x] Task #4
 
-- [ ] Project #1
+- [x] Project #1
+    - [x] Task #1
+    - [x] Task #2
+    - [x] Task #3
 
 - [ ] Project #2
 
