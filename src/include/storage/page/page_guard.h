@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common/logger.h"
 #include "storage/page/page.h"
 
 namespace bustub {
@@ -82,7 +83,7 @@ class BasicPageGuard {
   friend class ReadPageGuard;
   friend class WritePageGuard;
 
-  [[maybe_unused]] BufferPoolManager *bpm_{nullptr};
+  BufferPoolManager *bpm_{nullptr};
   Page *page_{nullptr};
   bool is_dirty_{false};
 };
